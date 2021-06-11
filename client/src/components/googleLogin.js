@@ -2,30 +2,39 @@ import React from 'react';
 import { GoogleLogin } from 'react-google-login';
 
 
-const googleLogin = () => {
+const googleLogin = ({setLoggedIn}) => {
+
+
   const handleLogin = async googleData => {
-    const res = await fetch("http://localhost:8000/api/v1/auth/google", {
+    debugger;
+    const res = await fetch("http://localhost:8000/create-new-account", {
         method: "POST",
         body: JSON.stringify({
-        token: googleData.tokenId
+        token: googleData
       }),
       headers: {
         "Content-Type": "application/json"
       }
     })
     const data = await res.json()
-    // store returned user somehow
     debugger;
+    setLoggedIn(true)
+      
   }
 
   return (
+    <>
     <GoogleLogin
     clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-    buttonText="Log in with Google"
+    buttonText="Authorize Account"
     onSuccess={handleLogin}
     onFailure={handleLogin}
-    cookiePolicy={'single_host_origin'}
+    cookiePolicy='single_host_origin'
+    scope="https://www.googleapis.com/auth/gmail.readonly"
+    accessType="offline"
+    responseType="code"
 />
+  </>
   )
 }
 

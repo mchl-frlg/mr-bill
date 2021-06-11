@@ -1,24 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
 import GoogleLogin from './components/googleLogin'
+import GoogleLogout from './components/googleLogout'
+import { useState, useEffect } from 'react';
 
 function App() {
+  const [loggedIn, SetLoggedIn] = useState(false);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <GoogleLogin/>
+        <h1>Mr. Bill</h1>
+        {loggedIn ? <GoogleLogout setLoggedIn={SetLoggedIn}/> : <GoogleLogin setLoggedIn={SetLoggedIn}/>}
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Log in with google to create an account
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
