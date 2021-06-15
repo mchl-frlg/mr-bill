@@ -12,8 +12,8 @@ const Navigation = () => {
         <Navbar.Brand href="#home">Mr. Bill</Navbar.Brand>
         <Navbar.Collapse id="basic-navbar-nav navbar-right">
           <Nav className="mr-auto">
-            <Nav.Link href="#home">Sign Up</Nav.Link>
-            <Nav.Link href="#link">Sign In</Nav.Link>
+            <Nav.Link href="/">Sign Up</Nav.Link>
+            <Nav.Link href="#"><Login/></Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

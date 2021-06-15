@@ -11,7 +11,7 @@ const parseBills = require("../helpers/parseBills");
 const scanInbox = require('../helpers/scanInbox')
 const { encrypt, decrypt } = require('../helpers/crypto');
 //const { gmail } = require("googleapis/build/src/apis/gmail");
-const oAuth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, 'http://localhost:3000');
+//const oAuth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, 'http://localhost:3000');
 
 //const scope ="https://www.googleapis.com/auth/gmail.readonly";
 
@@ -22,6 +22,10 @@ const oAuth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, proces
 //   scope: scope
 // });
 
+const setupClient = () => {
+  return new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, 'http://localhost:3000');
+}
+
 router.post("/clear-db", (req, res) => {
   User.deleteMany({}).exec()
     .then(confirmed => res.send('deleted data'))
@@ -29,6 +33,7 @@ router.post("/clear-db", (req, res) => {
 
 router.post("/create-new-account", (req, res) => {
   let newUser = new User()
+  const oAuth2Client = setupClient()
   oAuth2Client.getToken(req.body.code)
     .then(tokenResponse => {
       oAuth2Client.setCredentials(tokenResponse.tokens)
@@ -41,7 +46,7 @@ router.post("/create-new-account", (req, res) => {
       newUser.email = profile.data.email
       newUser.picture = profile.data.picture
       newUser.scan.preferredScanTime = new Date()
-      newUser.scan.lastScanned = new Date()
+      newUser.scan.lastScanned = Date.now()
       newUser.billsList = [];
       return scanInbox(oAuth2Client, newUser.email)
     })
@@ -59,8 +64,28 @@ router.post("/create-new-account", (req, res) => {
     })
 })
 
-router.post("/get-account", (req, res) => {
-
+router.post("/fetch-user", (req, res) => {
+  let currentUser
+  User.find({email: req.body.profileObj.email})
+    .then(user => {
+      currentUser = user[0]
+      const oAuth2Client = setupClient()
+      oAuth2Client.setCredentials(req.body.qc)
+      return scanInbox(oAuth2Client, currentUser.email, currentUser.scan.lastScanned)
+    })
+    .then(newBills => {
+      currentUser.billsList = currentUser.billsList.concat(newBills)
+      currentUser.scan.lastScanned = Date.now()
+      return currentUser.save()
+    })
+    .then(savedUser => {
+      res.send(savedUser)
+    })
+    .catch(err => {
+      if(err){
+        console.error(err)
+      }
+    })
 })
 
 router.put("update-bills", (req, res)=> {
@@ -68,7 +93,7 @@ router.put("update-bills", (req, res)=> {
 })
 
 router.delete("delete-user", (req, res)=> {
-  
+
 })
 
 module.exports = router;

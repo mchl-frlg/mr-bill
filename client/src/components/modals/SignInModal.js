@@ -18,7 +18,7 @@ function SignInModal() {
 
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header>
-          <Modal.Title>Edit Company</Modal.Title>
+          <Modal.Title>Sign In With Google</Modal.Title>
           <CloseButton onClose={onClose} />
         </Modal.Header>
           <Modal.Body>

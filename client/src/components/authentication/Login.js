@@ -1,7 +1,7 @@
 import React from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { useDispatch } from 'react-redux';
-import { createUser } from '../../actions/index'
+import { fetchUser } from '../../actions/index'
 import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import CloseButton from '../buttons/CloseButton'
@@ -14,7 +14,8 @@ const Login = () => {
   };
   const dispatch = useDispatch()
   const handleLogin = googleData => {
-    dispatch(createUser(googleData))
+    debugger;
+    dispatch(fetchUser(googleData))
   }
 
   return (
@@ -23,7 +24,7 @@ const Login = () => {
 
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header>
-          <Modal.Title>Edit Company</Modal.Title>
+          <Modal.Title>Sign In</Modal.Title>
           <CloseButton onClose={onClose} />
         </Modal.Header>
           <Modal.Body>
@@ -32,13 +33,11 @@ const Login = () => {
           <Modal.Footer>
             <GoogleLogin
               clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              buttonText="Authorize Account"
+              buttonText="Sign In"
               onSuccess={handleLogin}
               onFailure={handleLogin}
               cookiePolicy='single_host_origin'
               scope="https://www.googleapis.com/auth/gmail.readonly"
-              accessType="offline"
-              responseType="code"
             />
           </Modal.Footer>
       </Modal>
