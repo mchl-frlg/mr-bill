@@ -4,9 +4,12 @@ const User = require("../../models/user");
 const axios = require('axios');
 const token = require('../../token.json')
 const {google} = require('googleapis');
+const atob = require("atob")
 const googleQuery = "'bill' OR 'invoice' OR 'Bill' OR 'Invoice'"
-
 const { OAuth2Client } = require('google-auth-library');
+const parseBills = require("../helpers/parseBills");
+const scanInbox = require('../helpers/scanInbox')
+const { encrypt, decrypt } = require('../helpers/crypto');
 //const { gmail } = require("googleapis/build/src/apis/gmail");
 const oAuth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, 'http://localhost:3000');
 
@@ -19,42 +22,53 @@ const oAuth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, proces
 //   scope: scope
 // });
 
-router.post("/gmail-to-database", (req, res) => {
-
-
+router.post("/clear-db", (req, res) => {
+  User.deleteMany({}).exec()
+    .then(confirmed => res.send('deleted data'))
 })
 
-
-router.post("/api/v1/auth/google", async (req, res) => {
-  const { token }  = req.body;
-
-  const ticket = await client.verifyIdToken({
-    idToken: token,
-    audience: process.env.CLIENT_ID
-  });
-
-  const { name, email, picture } = ticket.getPayload();
-
-  const user = new User({ name, email, picture });
-
-  req.session.userId = user.id
-
-})
-
-router.post("/create-new-account", async (req, res) => {
-  oAuth2Client.getToken(req.body.token, (err, token) => {
-    oAuth2Client.setCredentials(token);
-    const gmail = google.gmail({version: 'v1', auth: oAuth2Client})
-    gmail.users.messages.list({userId: 'me', q: googleQuery}, (err, idList) => {
-    const billsArray =idList.data.messages.map(message => {
-      return gmail.users.messages.get({userId: 'me', id: message.id})
-      })
-      Promise.all(billsArray).then(bills=>{
-        res.send(bills);
-      })
+router.post("/create-new-account", (req, res) => {
+  let newUser = new User()
+  oAuth2Client.getToken(req.body.code)
+    .then(tokenResponse => {
+      oAuth2Client.setCredentials(tokenResponse.tokens)
+      newUser.encryptedToken = encrypt(JSON.stringify(tokenResponse.tokens))
+      const oauth2 = google.oauth2({version: 'v2', auth: oAuth2Client})
+      return oauth2.userinfo.get()
     })
-    res.end()
-  })
+    .then(profile => {
+      newUser.name = profile.data.name
+      newUser.email = profile.data.email
+      newUser.picture = profile.data.picture
+      newUser.scan.preferredScanTime = new Date()
+      newUser.scan.lastScanned = new Date()
+      newUser.billsList = [];
+      return scanInbox(oAuth2Client, newUser.email)
+    })
+    .then(newBillsList => {
+      newUser.billsList = newBillsList
+      return newUser.save()
+    })
+    .then(savedUser =>{
+      res.send(savedUser)
+    })
+    .catch(err=>{
+      if (err){
+        console.error(err)
+      }
+    })
+})
+
+router.post("/get-account", (req, res) => {
+
+})
+
+router.put("update-bills", (req, res)=> {
+
+})
+
+router.delete("delete-user", (req, res)=> {
+  
 })
 
 module.exports = router;

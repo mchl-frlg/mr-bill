@@ -2,12 +2,9 @@ import React from 'react';
 import { GoogleLogout } from 'react-google-login';
 
 
-const googleLogout = ({setLoggedIn}) => {
-  const onSuccess = async googleData => {
+const Logout = () => {
+  const onSuccess = googleData => {
     console.log('logged out successfully');
-      
-    debugger;
-    setLoggedIn(false);
   }
 
   return (
@@ -20,4 +17,4 @@ const googleLogout = ({setLoggedIn}) => {
   )
 }
 
-export default googleLogout
+export default Logout

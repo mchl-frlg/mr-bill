@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const User = require("../models/user");
-var session = require('express-session')
+const session = require('express-session')
 
 
 mongoose.connect("mongodb://localhost/mr-bill", {
@@ -20,7 +20,7 @@ app.use(
   })
 );
 
-app.use(session({ secret: process.env.GOOGLE_CLIENT_SECRET, cookie: {maxAge: 24 * 60 * 60 * 1000}}))
+app.use(session({ secret: process.env.COOKIE_SECRET, cookie: {maxAge: 24 * 60 * 60 * 1000}}))
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

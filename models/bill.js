@@ -4,10 +4,14 @@ const Schema = mongoose.Schema;
 const billSchema = new Schema({
   amountDue: Number,
   dueDate: Boolean,
-  payableTo: String,
-  late: Boolean,
-  imageUrl: String,
-  for: String
+  link: String,
+  fullText: String,
+  from: String,
+  fromEmail: String,
+  category: {
+    whitelist: Boolean,
+    blacklist: Boolean
+  }
 });
 
 module.exports = billSchema;
