@@ -1,37 +1,42 @@
 const atob = require("atob")
 const _ = require("lodash")
 
-const getFullText = (billObj) => {
-  let fullText
-  const root = billObj.data.payload.parts[0]
-  if (root.mimeType === 'multipart/alternative'){
-    fullText = atob(root.parts[0].body.data)
+const gmailRecurse = (path) =>{
+  if(path.body.size > 0){
+    return atob(path.body.data)
   }
-  fullText = atob(root.body.data)
-  return unescape(fullText)
+  let nextSearch = path.parts[0]
+  return gmailRecurse(nextSearch)
 }
 
-const findAmountDue = (string) => {
-  const unescape = _.replace(string, '\r', '' )
-  const words = string.split(' ')
- 
-  return words
+const findAmountDue = (text) => {
+  const dollars = text.split(' ').filter(word => {
+    return word.includes('$') && !word.includes('http')
+  })
+  if (dollars.length === 0){
+    return 0
+  }
+  return Number(dollars[dollars.length - 1].replace(/[^\d.-]/g, ''))
 }
 
-
-
-
-const parseBills = (bills, authUser) => {
+const parseBills = (bills, userEmail) => {
   const parsedBills = [];
   bills.forEach(bill => {
     const fromIndex = bill.data.payload.headers.findIndex(header => {
         return header.name === 'From'
     })
+    const from = bill.data.payload.headers[fromIndex].value
+    if (from.includes(userEmail)){
+      return
+    }
+    const fromSplit = from.split('<')
     const billToAdd = {};
-    //billToAdd.fullText = getFullText(bill)
-    billToAdd.from = bill.data.payload.headers[fromIndex].value
-    billToAdd.link = `https://mail.google.com/mail?authuser=${authUser}#all/${bill.data.id}`
-    //billToAdd.amountDue = findAmountDue(billToAdd.fullText)
+    billToAdd.fullText = gmailRecurse(bill.data.payload)
+    billToAdd.date = new Date(Number(bill.data.internalDate))
+    billToAdd.from = fromSplit[0]
+    billToAdd.fromEmail = fromSplit.length === 1 ? fromSplit[0] : fromSplit[1]
+    billToAdd.link = `https://mail.google.com/mail?authuser=${userEmail}#all/${bill.data.id}`
+    billToAdd.amountDue = findAmountDue(billToAdd.fullText)
     parsedBills.push(billToAdd)
   })
   return parsedBills

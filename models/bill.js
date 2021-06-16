@@ -3,8 +3,9 @@ const Schema = mongoose.Schema;
 
 const billSchema = new Schema({
   amountDue: Number,
-  dueDate: Boolean,
+  confirmed: Boolean,
   link: String,
+  date: String,
   fullText: String,
   from: String,
   fromEmail: String,

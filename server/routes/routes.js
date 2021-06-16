@@ -10,17 +10,8 @@ const { OAuth2Client } = require('google-auth-library');
 const parseBills = require("../helpers/parseBills");
 const scanInbox = require('../helpers/scanInbox')
 const { encrypt, decrypt } = require('../helpers/crypto');
-//const { gmail } = require("googleapis/build/src/apis/gmail");
-//const oAuth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, 'http://localhost:3000');
+const sendEmail = require('../helpers/notifications/sendEmail')
 
-//const scope ="https://www.googleapis.com/auth/gmail.readonly";
-
-// const url = oAuth2Client.generateAuthUrl({
-//   // 'online' (default) or 'offline' (gets refresh_token)
-//   access_type: 'offline',
-//   // If you only need one scope you can pass it as a string
-//   scope: scope
-// });
 
 const setupClient = () => {
   return new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, 'http://localhost:3000');
@@ -52,6 +43,7 @@ router.post("/create-new-account", (req, res) => {
     })
     .then(newBillsList => {
       newUser.billsList = newBillsList
+      sendEmail(oAuth2Client, newBillsList, newUser.email)
       return newUser.save()
     })
     .then(savedUser =>{

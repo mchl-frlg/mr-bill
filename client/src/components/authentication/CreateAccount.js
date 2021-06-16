@@ -21,7 +21,7 @@ const GoogleCreateAccount = () => {
     onSuccess={handleLogin}
     onFailure={handleLogin}
     cookiePolicy='single_host_origin'
-    scope="https://www.googleapis.com/auth/gmail.readonly"
+    scope="https://www.googleapis.com/auth/gmail.modify"
     accessType="offline"
     responseType="code"
 />

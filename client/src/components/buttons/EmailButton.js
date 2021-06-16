@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { X, XCircleFill } from 'react-bootstrap-icons';
+import { Envelope, EnvelopeOpenFill } from 'react-bootstrap-icons';
 
-const CloseButton = ({ onClose }) => {
+const EmailButton = ({ onClose }) => {
   const [xHover, setXHover] = useState(false);
   return (
     <h3
@@ -9,9 +9,9 @@ const CloseButton = ({ onClose }) => {
       onMouseEnter={() => setXHover(true)}
       onMouseLeave={() => setXHover(false)}
     >
-      <span title="close">{xHover ? <XCircleFill /> : <X />}</span>
+      <span title="close">{xHover ? <EnvelopeOpenFill /> : <Envelope />}</span>
     </h3>
   );
 };
 
-export default CloseButton;
+export default EmailButton;

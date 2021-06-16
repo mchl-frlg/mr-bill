@@ -20,7 +20,10 @@ app.use(
   })
 );
 
-app.use(session({ secret: process.env.COOKIE_SECRET, cookie: {maxAge: 24 * 60 * 60 * 1000}}))
+app.use(session({ 
+  secret: process.env.COOKIE_SECRET, 
+  //cookie: {maxAge: 3 * 60 * 1000}
+}))
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -33,7 +36,7 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  User.findById(req.session.id).exec((err, foundUser)=>{
+  User.find({lastSession: req.session.id}).exec((err, foundUser)=>{
     req.user = foundUser;
     next()
   })

@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
-
+import EmailButton from './buttons/EmailButton'
+import{ Table } from 'react-bootstrap'
 const Dashboard = () => {
 
   const activeUser = useSelector(state => state.activeUser)
@@ -7,14 +8,30 @@ const Dashboard = () => {
   return (
     <>
       <h1>THIS IS THE DASHBOARD</h1>
-      {activeUser.billsList?.map(bill => {
-        return (
-          <>
-          <h2>{bill.from}</h2>
-          <p>{bill.link}</p>
-          </>
-        )
-      })}
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>From</th>
+            <th>sender</th>
+            <th>amount</th>
+            <th>link</th>
+          </tr>
+        </thead>
+        <tbody>
+        {activeUser.billsList?.map(bill => {
+          return (
+            <tr>
+              <td>{bill.date}</td>
+              <td>{bill.from}</td>
+              <td>{bill.fromEmail}</td>
+              <td>{bill.amountDue}</td>
+              <td><a href={bill.link} target="_blank" rel="noreferrer"><EmailButton/></a></td>
+            </tr>
+          )
+          })}
+        </tbody>
+      </Table>
     </>
   )
 }

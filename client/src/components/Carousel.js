@@ -11,23 +11,19 @@ const SignupCarousel = () => {
 
   return (
     <>
-      <Carousel activeIndex={index} onSelect={handleSelect}>
-        {carousel.map(item => {
-          return (
-            <Carousel.Item key={item.key}>
-            <h1>{item.title}</h1>
-            <Carousel.Caption>
-              <h3>{item.description}</h3>
-              <img
-              width={200}
-              src='https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_relaxing_on_patio_other/1800x1200_cat_relaxing_on_patio_other.jpg'
-              alt='cat'
-              />
-            </Carousel.Caption>
-          </Carousel.Item>
-          )
-        })}
-      </Carousel>
+      {carousel.map(item => {
+        return (
+          <div key={item.key}>
+          <h1>{item.title}</h1>
+            <h3>{item.description}</h3>
+            <img
+            width={200}
+            src='https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_relaxing_on_patio_other/1800x1200_cat_relaxing_on_patio_other.jpg'
+            alt='cat'
+            />
+        </div>
+        )
+      })}
     </>
   );
 }

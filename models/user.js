@@ -7,6 +7,7 @@ const UserSchema = new Schema({
   name: String,
   picture: String, 
   phone: String,
+  lastSession: String,
   encryptedToken: {
     iv: String,
     content: String
