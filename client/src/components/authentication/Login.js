@@ -1,7 +1,7 @@
 import React from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { useDispatch } from 'react-redux';
-import { fetchUser } from '../../actions/index'
+import { loginUser } from '../../actions/index'
 import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import CloseButton from '../buttons/CloseButton'
@@ -15,7 +15,7 @@ const Login = () => {
   const dispatch = useDispatch()
   const handleLogin = googleData => {
     debugger;
-    dispatch(fetchUser(googleData))
+    dispatch(loginUser(googleData))
   }
 
   return (
@@ -36,7 +36,7 @@ const Login = () => {
               buttonText="Sign In"
               onSuccess={handleLogin}
               onFailure={handleLogin}
-              cookiePolicy='single_host_origin'
+              //cookiePolicy='single_host_origin'
               scope="https://www.googleapis.com/auth/gmail.modify"
             />
           </Modal.Footer>

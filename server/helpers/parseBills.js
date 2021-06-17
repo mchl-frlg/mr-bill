@@ -9,6 +9,14 @@ const gmailRecurse = (path) =>{
   return gmailRecurse(nextSearch)
 }
 
+const amountDueRecurse = (dollars, index) => {
+  let lastRealNumber = Number(dollars[dollars.length - index].replace(/[^\d.-]/g, ''))
+  if (lastRealNumber){
+    return lastRealNumber
+  }
+  return amountDueRecurse(dollars, index+1)
+}
+
 const findAmountDue = (text) => {
   const dollars = text.split(' ').filter(word => {
     return word.includes('$') && !word.includes('http')
@@ -16,7 +24,8 @@ const findAmountDue = (text) => {
   if (dollars.length === 0){
     return 0
   }
-  return Number(dollars[dollars.length - 1].replace(/[^\d.-]/g, ''))
+  
+  return amountDueRecurse(dollars, 1)
 }
 
 const parseBills = (bills, userEmail) => {

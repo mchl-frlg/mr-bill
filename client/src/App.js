@@ -6,20 +6,27 @@ import Dashboard from './components/Dashboard'
 import Navigation from './components/Navigation'
 import Signup from './components/Signup'
 import { clearUser, fetchUser } from './actions'
+import { useCookies } from 'react-cookie'
 
 
 const App = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const activeUser = useSelector(state => state.activeUser)
-  
+  const [cookies, setCookie, removeCookie] = useCookies(['mr-bill-auth']);
+
   useEffect(() => {
     history.push(activeUser.name ? "/dashboard" : "/signup")
+    if(activeUser.name){
+      setCookie('mr-bill-auth', activeUser.encryptedToken.iv, {maxAge: 3600})
+      }
     }, [activeUser])
 
-  // useEffect(() => {
-  //   dispatch(fetchUser())
-  // }, [])
+  useEffect(() => {
+    if(cookies['mr-bill-auth']){
+      dispatch(fetchUser({cookie: cookies['mr-bill-auth']}))
+    }
+  }, [])
 
   return (
     <div className="App">

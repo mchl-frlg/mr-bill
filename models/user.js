@@ -14,7 +14,7 @@ const UserSchema = new Schema({
   },
   scan: {
     lastScanned: String,
-    preferredScanTime: String
+    batchScanTime: String
   },
   notifications: {
     email: Boolean,

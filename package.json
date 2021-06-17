@@ -20,6 +20,7 @@
     "googleapis": "^39.2.0",
     "lodash": "^4.17.21",
     "mimetext": "^0.2.2",
-    "mongoose": "^5.12.11"
+    "mongoose": "^5.12.11",
+    "node-cron": "^3.0.0"
   }
 }

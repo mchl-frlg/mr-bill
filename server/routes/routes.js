@@ -1,30 +1,34 @@
 const mongoose = require("mongoose");
 const router = require("express").Router();
 const User = require("../../models/user");
-const axios = require('axios');
-const token = require('../../token.json')
+const BatchJob = require("../../models/batchJob");
 const {google} = require('googleapis');
-const atob = require("atob")
-const googleQuery = "'bill' OR 'invoice' OR 'Bill' OR 'Invoice'"
-const { OAuth2Client } = require('google-auth-library');
-const parseBills = require("../helpers/parseBills");
 const scanInbox = require('../helpers/scanInbox')
 const { encrypt, decrypt } = require('../helpers/crypto');
 const sendEmail = require('../helpers/notifications/sendEmail')
+const scheduler = require('../helpers/scheduler')
+const batchJobsStart = require('../helpers/batchJobsStart')
+const setupGoogleClient = require('../helpers/setupGoogleClient')
 
-
-const setupClient = () => {
-  return new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, 'http://localhost:3000');
-}
 
 router.post("/clear-db", (req, res) => {
-  User.deleteMany({}).exec()
-    .then(confirmed => res.send('deleted data'))
+  User.deleteMany({})
+    .then(deleted => {
+      return BatchJob.deleteMany({})
+    })
+    .then(deleted => {
+      res.send('deleted data')
+    })
+    .catch(err=>{
+      if (err){
+        console.error(err)
+      }
+    })  
 })
 
 router.post("/create-new-account", (req, res) => {
   let newUser = new User()
-  const oAuth2Client = setupClient()
+  const oAuth2Client = setupGoogleClient()
   oAuth2Client.getToken(req.body.code)
     .then(tokenResponse => {
       oAuth2Client.setCredentials(tokenResponse.tokens)
@@ -36,14 +40,19 @@ router.post("/create-new-account", (req, res) => {
       newUser.name = profile.data.name
       newUser.email = profile.data.email
       newUser.picture = profile.data.picture
-      newUser.scan.preferredScanTime = new Date()
+      newUser.scan.batchScanTime = new Date().getHours()
       newUser.scan.lastScanned = Date.now()
       newUser.billsList = [];
       return scanInbox(oAuth2Client, newUser.email)
     })
     .then(newBillsList => {
       newUser.billsList = newBillsList
-      sendEmail(oAuth2Client, newBillsList, newUser.email)
+      return sendEmail(oAuth2Client, newBillsList, newUser)
+    })
+    .then(sentEmail => {
+      return scheduler(newUser.scan.batchScanTime, newUser._id)
+    })
+    .then(batchJob => {
       return newUser.save()
     })
     .then(savedUser =>{
@@ -57,12 +66,25 @@ router.post("/create-new-account", (req, res) => {
 })
 
 router.post("/fetch-user", (req, res) => {
+  User.find({'encryptedToken.iv': req.body.cookie})
+    .then(user => {
+      res.send(user[0])
+    })
+    .catch(err => {
+      if(err){
+        console.error(err)
+      }
+    })
+})
+
+
+router.post("/login-user", (req, res) => {
   let currentUser
   User.find({email: req.body.profileObj.email})
     .then(user => {
       currentUser = user[0]
-      const oAuth2Client = setupClient()
-      oAuth2Client.setCredentials(req.body.qc)
+      const oAuth2Client = setupGoogleClient()
+      oAuth2Client.setCredentials({access_token: req.body.accessToken})
       return scanInbox(oAuth2Client, currentUser.email, currentUser.scan.lastScanned)
     })
     .then(newBills => {
@@ -87,5 +109,11 @@ router.put("update-bills", (req, res)=> {
 router.delete("delete-user", (req, res)=> {
 
 })
+
+router.post("/schedule", (req, res)=> {
+  batchJobsStart()
+  res.send('started')
+})
+
 
 module.exports = router;

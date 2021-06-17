@@ -1,6 +1,7 @@
 import { Navbar, Nav, NavDropdown, FormControl, Form, Button } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux';
 import Login from './authentication/Login'
+import Logout from './authentication/Logout'
 
 const Navigation = () => {
 
@@ -41,7 +42,7 @@ const Navigation = () => {
           } id="basic-nav-dropdown">
             <NavDropdown.Item href="#action/3.1">Dashboard</NavDropdown.Item>
             <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Log Out</NavDropdown.Item>
+            <NavDropdown.Item href="#action/3.3"><Logout/></NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>

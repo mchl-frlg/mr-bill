@@ -21,7 +21,7 @@ const Dashboard = () => {
         <tbody>
         {activeUser.billsList?.map(bill => {
           return (
-            <tr>
+            <tr key ={bill._id}>
               <td>{bill.date}</td>
               <td>{bill.from}</td>
               <td>{bill.fromEmail}</td>

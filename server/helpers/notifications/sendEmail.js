@@ -15,19 +15,19 @@ const createMessage = (newBills, userEmail) => {
 
 
 
-const sendEmail = (oAuth2Client, newBills, userEmail) => {
+const sendEmail = (oAuth2Client, newBills, user) => {
   const gmail = google.gmail({version: 'v1', auth: oAuth2Client})
-  const body = createMessage(newBills, userEmail)
+  const body = createMessage(newBills, user.email)
   //might be requestbody below instead of body
-  gmail.users.messages.send({userId: 'me', requestBody: body})
-    .then(sentEmail => {
-      return sentEmail
-    })
-    .catch(err =>{
-      if(err){
-        console.error(err)
-      }
-    })
+  return gmail.users.messages.send({userId: 'me', requestBody: body})
+    // .then(sentEmail => {
+    //   return sentEmail
+    // })
+    // .catch(err =>{
+    //   if(err){
+    //     console.error(err)
+    //   }
+    // })
 }
 
 module.exports = sendEmail
