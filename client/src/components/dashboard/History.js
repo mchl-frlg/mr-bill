@@ -3,7 +3,7 @@ import Moment from 'react-moment';
 import { useSelector, useDispatch } from 'react-redux';
 import EmailButton from '../buttons/EmailButton'
 import{ Table, Accordion, Card, Button } from 'react-bootstrap'
-import ArchiveButton from '../buttons/ArchiveButton'
+import ClockButton from '../buttons/ClockButton'
 
 const Notifications = () => {
 
@@ -11,7 +11,8 @@ const Notifications = () => {
 
   return (
     <>
-      <ArchiveButton/>
+      <ClockButton/>
+      <p>recents paid</p>
       <Accordion>
         {activeUser.billsList?.map(bill => {
           if (bill.paid){

@@ -43,7 +43,7 @@ const parseBills = (bills, userEmail) => {
     billToAdd.fullText = gmailRecurse(bill.data.payload)
     billToAdd.date = new Date(Number(bill.data.internalDate))
     billToAdd.from = fromSplit[0]
-    billToAdd.fromEmail = fromSplit.length === 1 ? fromSplit[0] : fromSplit[1]
+    billToAdd.fromEmail = fromSplit.length === 1 ? fromSplit[0] : fromSplit[1].slice(0, -1)
     billToAdd.link = `https://mail.google.com/mail?authuser=${userEmail}#all/${bill.data.id}`
     billToAdd.amountDue = findAmountDue(billToAdd.fullText)
     parsedBills.push(billToAdd)

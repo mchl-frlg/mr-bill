@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateBill } from '../../actions'
 
 
-const SwitchButton = ({ bill, user }) => {
+const SwitchButton = ({ bill, user, billStatus, paid, displayOnly }) => {
   const [checked, setChecked] = useState(false);
   const dispatch = useDispatch();
 
@@ -14,17 +14,14 @@ const SwitchButton = ({ bill, user }) => {
     const billToUpdate = {
       user: user, 
       bill: bill, 
-      billStatus: true
+      billStatus: billStatus,
+      paid: paid
     }
     dispatch(updateBill(billToUpdate))
   }
 
-  const handleSwitch = () => {
-    
-  }
-
   return (
-      <Switch onChange={handleChange} onColor={'#CC5500'} checked={checked} />
+      <Switch onChange={displayOnly ? null : handleChange} onColor={'#CC5500'} checked={displayOnly ? paid : checked} />
   );
 }
 

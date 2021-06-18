@@ -10,23 +10,32 @@ const sendEmail = require('./notifications/sendEmail')
 
 
 
+const batchJobScan = (user) => {
+  const oAuth2Client = setupGoogleClient()
+  const fullToken = JSON.parse(decrypt(user.encryptedToken))
+  oAuth2Client.setCredentials({refresh_token: fullToken.refresh_token})
+  scanInbox(oAuth2Client, user.email, user.scan.lastScanned)
+    .then(parsedBills => {
+      user.scan.lastScanned = Date.now()
+      return sendEmail(oAuth2Client, parsedBills, user)
+    })
+    .then(sentEmail=>{
+      return user.save()
+    })
+    .catch(err=>{
+      if(err){
+        console.error(err)
+      }
+    })
+}
+
 const runBatchJob = async (batchHour) => {
-  const batch = await BatchJob.find({hour: batchHour}).populate('users')
-  const batchPromises = await batch[0].users.map(async user =>{
-    const oAuth2Client = setupGoogleClient()
-    const fullToken = JSON.parse(decrypt(user.encryptedToken))
-    oAuth2Client.setCredentials({refresh_token: fullToken.refresh_token})
-    const parsedBills = await scanInbox(oAuth2Client, user.email, user.scan.lastScanned)
-    user.scan.lastScanned = Date.now()
-    sendEmail(oAuth2Client, parsedBills, user)
-      .then(sentEmail=>{
-        return user.save()
-      })
-      .catch(err=>{
-        if(err){
-          console.error(err)
-        }
-      })
+  const batch = await BatchJob.find({hour: 9}).populate('users')
+  if (batch.length === 0){
+    return
+  }
+  batch[0].users.forEach(user =>{
+    batchJobScan(user)
   })
 }
   

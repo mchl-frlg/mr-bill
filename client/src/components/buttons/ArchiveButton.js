@@ -9,7 +9,7 @@ const ArchiveButton = ({ onClick }) => {
       onMouseEnter={() => setArchiveHover(true)}
       onMouseLeave={() => setArchiveHover(false)}
     >
-      <span title="view full archive">{archiveHover ? <SafeFill /> : <Safe />}</span>
+      <span title="viewing full archive">{archiveHover ? <SafeFill /> : <Safe />}</span>
     </h1>
   );
 };

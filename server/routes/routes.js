@@ -8,7 +8,9 @@ const { encrypt, decrypt } = require('../helpers/crypto');
 const sendEmail = require('../helpers/notifications/sendEmail')
 const scheduler = require('../helpers/scheduler')
 const batchJobsStart = require('../helpers/batchJobsStart')
+const batchRemover = require('../helpers/batchRemover')
 const setupGoogleClient = require('../helpers/setupGoogleClient')
+const _ = require("lodash")
 
 
 router.post("/clear-db", (req, res) => {
@@ -105,11 +107,13 @@ router.post("/login-user", (req, res) => {
 router.put("/update-bill", (req, res)=> {
   User.findById(req.body.user)
     .then(user=>{
+      const wl = user.billHistory.whitelist
+      const bl = user.billHistory.blacklist
       const bill = user.billsList.id(req.body.bill)
-      bill.paid = req.body.billStatus
+      bill.paid = req.body.paid
       req.body.billStatus ?
-        user.billHistory.whitelist.push(bill.fromEmail) :
-        user.billHistory.blacklist.push(bill.fromEmail)
+        wl.push(bill.fromEmail) :
+        bl.push(bill.fromEmail)
       return user.save()
     })
     .then(savedUser=>{
@@ -122,14 +126,47 @@ router.put("/update-bill", (req, res)=> {
     })
 })
 
-router.delete("delete-user", (req, res)=> {
+router.put("/update-user", (req, res)=> {
+  User.findById(req.body.user)
+    .then(user=>{
+      user.scan.batchScanTime = req.body.time
+      return user.save()
+    })
+    .then(savedUser =>{
+      return batchRemover(req.body.user)
+    })
+    .then(batchRemoved=>{
+      return scheduler(req.body.time, req.body.user)
+    })
+    .then(batchAdded=>{
+      res.end()
+    })
+    
+    .catch(err=>{
+      if(err){
+        console.error(err)
+      }
+    })
+})
 
+router.delete("/delete-user/:id", (req, res)=> {
+  User.deleteOne({_id: req.params.id})
+    .then(confirmation=>{
+      return batchRemover(req.body.user)
+    })
+    .then(batchUpdated=>{
+      res.end()
+    })
+    .catch(err=>{
+      if(err){
+        console.error(err)
+      }
+    })
 })
 
 router.post("/schedule", (req, res)=> {
   batchJobsStart()
   res.send('started')
 })
-
 
 module.exports = router;

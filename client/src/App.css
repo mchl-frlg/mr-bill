@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: #e6e6e6;
 }
 
 .App-logo {
@@ -37,6 +38,28 @@
   }
 }
 
-.row {
+/* .row {
   margin-top: 3%;
+} */
+
+.d-column {
+  padding: 2%;
+}
+
+.brand-box {
+  margin-left: 2%;
+}
+
+.dropdown-box {
+  text-align: right;
+  margin-right: 2%;
+}
+
+.sign-up-button {
+  margin: 4%;
+}
+
+.nav-links {
+  text-decoration: none;
+  color: #282c34;
 }

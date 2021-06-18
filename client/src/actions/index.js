@@ -50,9 +50,32 @@ export function clearUser() {
 }
 
 export function updateBill(billObj) {
-  debugger;
   return axios
     .put(`http://localhost:8000/update-bill`, billObj)
+    .then((response) => ({
+      type: FETCH_USER,
+      payload: response,
+    }))
+    .catch(err => {
+      console.error(err)
+    });
+}
+
+export function updateUser(userObj) {
+  return axios
+    .put(`http://localhost:8000/update-user`, userObj)
+    .then((response) => ({
+      type: FETCH_USER,
+      payload: response,
+    }))
+    .catch(err => {
+      console.error(err)
+    });
+}
+
+export function deleteUser(userId) {
+  return axios
+    .delete(`http://localhost:8000/delete-user/${userId}`)
     .then((response) => ({
       type: FETCH_USER,
       payload: response,
