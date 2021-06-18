@@ -6,7 +6,7 @@ export const CLEAR_USER = "CLEAR_USER";
 
 export function createUser(authCode) {
   return axios
-    .post(`http://localhost:8000/create-new-account`, authCode)
+    .post(`/create-new-account`, authCode)
     .then((response) => {
       return {
         type: CREATE_USER,
@@ -20,7 +20,7 @@ export function createUser(authCode) {
 
 export function fetchUser(cookie) {
   return axios
-    .post(`http://localhost:8000/fetch-user`, cookie)
+    .post(`/fetch-user`, cookie)
     .then((response) => ({
       type: FETCH_USER,
       payload: response,
@@ -32,7 +32,7 @@ export function fetchUser(cookie) {
 
 export function loginUser(authCode) {
   return axios
-    .post(`http://localhost:8000/login-user`, authCode)
+    .post(`/login-user`, authCode)
     .then((response) => ({
       type: FETCH_USER,
       payload: response,
@@ -51,7 +51,7 @@ export function clearUser() {
 
 export function updateBill(billObj) {
   return axios
-    .put(`http://localhost:8000/update-bill`, billObj)
+    .put(`/update-bill`, billObj)
     .then((response) => ({
       type: FETCH_USER,
       payload: response,
@@ -63,7 +63,7 @@ export function updateBill(billObj) {
 
 export function updateUser(userObj) {
   return axios
-    .put(`http://localhost:8000/update-user`, userObj)
+    .put(`/update-user`, userObj)
     .then((response) => ({
       type: FETCH_USER,
       payload: response,
@@ -75,7 +75,7 @@ export function updateUser(userObj) {
 
 export function deleteUser(userId) {
   return axios
-    .delete(`http://localhost:8000/delete-user/${userId}`)
+    .delete(`/delete-user/${userId}`)
     .then((response) => ({
       type: FETCH_USER,
       payload: response,
