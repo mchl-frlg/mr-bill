@@ -102,8 +102,8 @@ router.post("/login-user", (req, res) => {
     })
 })
 
-router.put("update-bills", (req, res)=> {
-
+router.put("update-bill", (req, res)=> {
+  
 })
 
 router.delete("delete-user", (req, res)=> {

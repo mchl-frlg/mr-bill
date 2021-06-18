@@ -9,7 +9,7 @@ const EmailButton = ({ onClose }) => {
       onMouseEnter={() => setXHover(true)}
       onMouseLeave={() => setXHover(false)}
     >
-      <span title="close">{xHover ? <EnvelopeOpenFill /> : <Envelope />}</span>
+      <span title="view bill">{xHover ? <EnvelopeOpenFill /> : <Envelope />}</span>
     </h3>
   );
 };

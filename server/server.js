@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const User = require("../models/user");
 const session = require('express-session')
+const batchJobsStart = require('./helpers/batchJobsStart')
 
 
 mongoose.connect("mongodb://localhost/mr-bill", {
@@ -45,6 +46,8 @@ app.use((req, res, next) => {
 const routes = require("./routes/routes");
 
 app.use(routes);
+
+batchJobsStart()
 
 const PORT = process.env.PORT || 8000
 
