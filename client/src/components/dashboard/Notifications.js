@@ -27,6 +27,9 @@ const Notifications = () => {
         </thead>
         <tbody>
         {activeUser.billsList?.map(bill => {
+          if(bill.paid){
+            return <></>
+          }
           return (
             <tr key ={bill._id}>
               <td><Moment format="MM/DD/YYYY">{bill.date}</Moment></td>
@@ -34,7 +37,7 @@ const Notifications = () => {
               <td>{bill.fromEmail}</td>
               <td>${bill.amountDue}</td>
               <td><a href={bill.link} target="_blank" rel="noreferrer"><EmailButton/></a></td>
-              <td><SwitchButton/></td>
+              <td><SwitchButton bill={bill._id} user={activeUser._id}/></td>
               <td><TrashButton/></td>
             </tr>
           )

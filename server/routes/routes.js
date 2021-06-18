@@ -102,8 +102,24 @@ router.post("/login-user", (req, res) => {
     })
 })
 
-router.put("update-bill", (req, res)=> {
-  
+router.put("/update-bill", (req, res)=> {
+  User.findById(req.body.user)
+    .then(user=>{
+      const bill = user.billsList.id(req.body.bill)
+      bill.paid = req.body.billStatus
+      req.body.billStatus ?
+        user.billHistory.whitelist.push(bill.fromEmail) :
+        user.billHistory.blacklist.push(bill.fromEmail)
+      return user.save()
+    })
+    .then(savedUser=>{
+      res.send(savedUser)
+    })
+    .catch(err=>{
+      if(err){
+        console.error(err)
+      }
+    })
 })
 
 router.delete("delete-user", (req, res)=> {

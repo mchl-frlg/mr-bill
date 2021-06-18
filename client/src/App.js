@@ -31,8 +31,8 @@ const App = () => {
   return (
     <div className="App">
       <Navigation/>
-        {/* <h1 onClick={() => dispatch(clearUser())}>clear user</h1>
-        <h1 onClick={() => console.log(activeUser)}>log store</h1> */}
+        {/* <h1 onClick={() => dispatch(clearUser())}>clear user</h1> */}
+        <h1 onClick={() => console.log(activeUser)}>log store</h1>
         <Switch>
           <Route path="/dashboard" component={Dashboard}/>
           <Route path="/signup" component={Signup}/>

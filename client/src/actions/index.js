@@ -48,3 +48,16 @@ export function clearUser() {
       payload: {},
     }
 }
+
+export function updateBill(billObj) {
+  debugger;
+  return axios
+    .put(`http://localhost:8000/update-bill`, billObj)
+    .then((response) => ({
+      type: FETCH_USER,
+      payload: response,
+    }))
+    .catch(err => {
+      console.error(err)
+    });
+}
