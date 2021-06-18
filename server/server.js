@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const User = require("../models/user");
 const session = require('express-session')
 const batchJobsStart = require('./helpers/batchJobsStart')
-const keys = require('./server/config/keys');
+const keys = require('./config/keys');
 
 
 mongoose.connect(keys.MONGODB_URI, {
