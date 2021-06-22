@@ -47,7 +47,7 @@ router.post("/create-new-account", (req, res) => {
     })
     .then(newBillsList => {
       newUser.billsList = newBillsList
-      return sendEmail(oAuth2Client, newBillsList, newUser)
+      return sendEmail(oAuth2Client, newBillsList.length, newUser)
     })
     .then(sentEmail => {
       return newUser.save()
@@ -156,7 +156,6 @@ router.delete("/delete-bill/:id/:billId", (req, res)=> {
   User.find({_id: req.params.id})
     .then(user=>{
       const newList = user[0].billsList.filter(bill => {
-        console.log(bill._id)
         return bill.id !== req.params.billId
       })
       user[0].billsList = newList;

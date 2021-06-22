@@ -17,7 +17,7 @@ const Notifications = () => {
       <p>recents</p>
       <Accordion>
         {activeUser.billsList?.filter(bill => bill.paid === true).map((filteredBill, index) => {
-            if(index < 10){
+            if(index < 8){
               return (
                 <Card key={filteredBill._id}>
               <Card.Header>
