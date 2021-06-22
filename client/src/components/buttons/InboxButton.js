@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Inbox, InboxFill } from 'react-bootstrap-icons';
 
-const InboxButton = ({ onClose }) => {
+const InboxButton = ({ onClose, showBills }) => {
   const [xHover, setXHover] = useState(false);
   return (
     <h1
@@ -9,7 +9,7 @@ const InboxButton = ({ onClose }) => {
       onMouseEnter={() => setXHover(true)}
       onMouseLeave={() => setXHover(false)}
     >
-      <span title="your bills">{xHover ? <InboxFill /> : <Inbox />}</span>
+      <span title="your bills">{showBills ? <InboxFill /> : <Inbox />}</span>
     </h1>
   );
 };

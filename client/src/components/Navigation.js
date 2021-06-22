@@ -21,7 +21,7 @@ const Navigation = () => {
 
   return (
     <Navbar bg="light" expand="lg">
-      <Navbar.Brand href="#home" className='brand-box'><img src='./mr-bill-icons/Icon-1-light.png' alt='cartoon'width={65}/><br/>Mr. Bill</Navbar.Brand>
+      <Navbar.Brand href="#home" className='brand-box'><img src='./mr-bill-icons/Icon-1-light.png' alt='cartoon'width={65}/><br/><span style={{"fontFamily": "'Courier New', Monospace"}}>Mr. Bill</span></Navbar.Brand>
       <Nav className="ml-auto">
         <NavDropdown title={
           <>

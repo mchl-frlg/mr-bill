@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Bell, BellFill } from 'react-bootstrap-icons';
 
-const BellButton = ({ onClick }) => {
+const BellButton = ({ onClick, showBills }) => {
   const [hover, setHover] = useState(false);
   return (
     <h1
@@ -9,7 +9,7 @@ const BellButton = ({ onClick }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <span title="notifications">{hover ? <BellFill /> : <Bell />}</span>
+      <span title="notifications">{showBills ? <Bell /> : <BellFill />}</span>
     </h1>
   );
 };

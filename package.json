@@ -23,7 +23,8 @@
     "lodash": "^4.17.21",
     "mimetext": "^0.2.2",
     "mongoose": "^5.12.11",
-    "node-cron": "^3.0.0"
+    "node-cron": "^3.0.0",
+    "twilio": "^3.64.0"
   },
   "engines": {
     "node": "14.16.0",

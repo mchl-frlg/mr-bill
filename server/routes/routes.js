@@ -1,23 +1,18 @@
 const mongoose = require("mongoose");
 const router = require("express").Router();
 const User = require("../../models/user");
-const BatchJob = require("../../models/batchJob");
 const {google} = require('googleapis');
 const scanInbox = require('../helpers/scanInbox')
 const { encrypt, decrypt } = require('../helpers/crypto');
 const sendEmail = require('../helpers/notifications/sendEmail')
-const scheduler = require('../helpers/scheduler')
 const batchJobsStart = require('../helpers/batchJobsStart')
-const batchRemover = require('../helpers/batchRemover')
 const setupGoogleClient = require('../helpers/setupGoogleClient')
 const _ = require("lodash")
+const sendText = require('../helpers/notifications/sendText')
 
 
 router.post("/clear-db", (req, res) => {
   User.deleteMany({})
-    .then(deleted => {
-      return BatchJob.deleteMany({})
-    })
     .then(deleted => {
       res.send('deleted data')
     })
@@ -44,7 +39,10 @@ router.post("/create-new-account", (req, res) => {
       newUser.picture = profile.data.picture
       newUser.scan.batchScanTime = new Date().getHours()
       newUser.scan.lastScanned = Date.now()
-      newUser.billsList = [];
+      newUser.notifications.email = true
+      newUser.notifications.text = false
+      newUser.phone = ''
+      newUser.billsList = []
       return scanInbox(oAuth2Client, newUser.email)
     })
     .then(newBillsList => {
@@ -52,9 +50,6 @@ router.post("/create-new-account", (req, res) => {
       return sendEmail(oAuth2Client, newBillsList, newUser)
     })
     .then(sentEmail => {
-      return scheduler(newUser.scan.batchScanTime, newUser._id)
-    })
-    .then(batchJob => {
       return newUser.save()
     })
     .then(savedUser =>{
@@ -130,18 +125,14 @@ router.put("/update-user", (req, res)=> {
   User.findById(req.body.user)
     .then(user=>{
       user.scan.batchScanTime = req.body.time
+      user.notifications.email = req.body.email
+      user.notifications.text = req.body.text
+      user.phone = req.body.phone
       return user.save()
     })
-    .then(savedUser =>{
-      return batchRemover(req.body.user)
+    .then(savedUser=>{
+      res.send(savedUser)
     })
-    .then(batchRemoved=>{
-      return scheduler(req.body.time, req.body.user)
-    })
-    .then(batchAdded=>{
-      res.end()
-    })
-    
     .catch(err=>{
       if(err){
         console.error(err)
@@ -152,10 +143,27 @@ router.put("/update-user", (req, res)=> {
 router.delete("/delete-user/:id", (req, res)=> {
   User.deleteOne({_id: req.params.id})
     .then(confirmation=>{
-      return batchRemover(req.body.user)
-    })
-    .then(batchUpdated=>{
       res.end()
+    })
+    .catch(err=>{
+      if(err){
+        console.error(err)
+      }
+    })
+})
+
+router.delete("/delete-bill/:id/:billId", (req, res)=> {
+  User.find({_id: req.params.id})
+    .then(user=>{
+      const newList = user[0].billsList.filter(bill => {
+        console.log(bill._id)
+        return bill.id !== req.params.billId
+      })
+      user[0].billsList = newList;
+      return user[0].save()
+    })
+    .then(savedUser => {
+      res.send(savedUser)
     })
     .catch(err=>{
       if(err){
@@ -166,6 +174,11 @@ router.delete("/delete-user/:id", (req, res)=> {
 
 router.post("/schedule", (req, res)=> {
   batchJobsStart()
+  res.send('started')
+})
+
+router.post("/text", (req, res)=> {
+  sendText()
   res.send('started')
 })
 

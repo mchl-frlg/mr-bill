@@ -14,12 +14,11 @@ const UserSchema = new Schema({
   },
   scan: {
     lastScanned: String,
-    batchScanTime: String
+    batchScanTime: Number
   },
   notifications: {
     email: Boolean,
     text: Boolean,
-    browser: Boolean
   },
   billHistory: {
     whitelist: Array,

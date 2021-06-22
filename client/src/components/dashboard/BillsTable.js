@@ -13,8 +13,6 @@ const BillsTable = () => {
 
   return (
     <>
-      <h4><span title='notifications'><InboxButton/></span></h4>
-      <p>bills</p>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -39,7 +37,7 @@ const BillsTable = () => {
             )
           }
           return (
-            <></>
+            <React.Fragment key={bill._id}></React.Fragment>
           )
           })}
         </tbody>

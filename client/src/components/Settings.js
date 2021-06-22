@@ -1,29 +1,40 @@
 import { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import Switch from "react-switch";
+import { Modal, Button, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import CloseButton from './buttons/CloseButton';
+import DeleteButton from './buttons/DeleteButton'
 import Moment from 'react-moment';
-import { Redirect, Route, Switch, useHistory, Link } from 'react-router-dom';
+import { Redirect, Route, useHistory, Link } from 'react-router-dom';
 import { updateUser, deleteUser } from '../actions'
 
 function Settings() {
 
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
+  
+  
   const activeUser = useSelector(state => state.activeUser)
+  const [email, setEmail] = useState(activeUser.notifications.email);
+  const [text, setText] = useState(activeUser.notifications.text);
+  const [form, setForm] = useState({phone: activeUser.phone, time: activeUser.scan.batchScanTime});
 
-  const settingsChange = (timeInput) => {
+  const handleForm = (event) => {
+    setForm({...form, ...event})
+    console.log(form)
+  }
+
+  const settingsChange = () => {
     dispatch(updateUser({
-      time: timeInput,
-      user: activeUser._id
+      user: activeUser._id, 
+      text: text, 
+      email: email, 
+      ...form
     }));
     setShow(false);
   };
 
-  const handleDelete = () => {
-    dispatch(deleteUser(activeUser._id))
-    setShow(false);
-  }
+  
 
   const onClose = () => {
     setShow(false);
@@ -37,25 +48,43 @@ function Settings() {
 
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header>
-          <Modal.Title>Edit Company</Modal.Title>
+          <Modal.Title>Settings</Modal.Title>
           <CloseButton onClose={onClose} />
         </Modal.Header>
           <Modal.Body>
-            <h3>Notifications</h3>
-            <label>Time</label>
-            <select onChange={event=> {settingsChange(event.target.value)}}>
-              {times.map(time=>{
-                return(
-                  <option key={time} value={time}>
-                    {time}
-                  </option>
-                )
-              })}
-            </select>
+              <Form>
+                <Form.Group controlId="exampleForm.ControlSelect1">
+                  <Form.Label>Notification Time</Form.Label>
+                  <Form.Control as="select" defaultValue={activeUser.scan.batchScanTime} onChange={event=>{handleForm({time: event.target.value})}}>
+                    {times.map(time=>{
+                      return(
+                        <option key={time} value={time} >
+                          {time}
+                        </option>
+                      )
+                    })}
+                  </Form.Control>
+                </Form.Group>
+                  <Form.Group controlId="formBasicCheckbox">
+                  <Form.Label>Email Notifications</Form.Label>
+                  <br/>
+                    <Switch onChange={()=>{setEmail(!email)}} checked={email} onColor={'#CC5500'}/>
+                  </Form.Group>
+                  <Form.Group controlId="formBasicCheckbox">
+                  <Form.Label>Text Notifications</Form.Label>
+                  <br/>
+                    <Switch onChange={()=>{setText(!text)}} checked={text} onColor={'#CC5500'}/>
+                  </Form.Group>
+                <Form.Group controlId="exampleForm.ControlInput1">
+                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Control type="text" onChange={event=> {handleForm({phone: event.target.value})}} placeholder={activeUser.phone}/>
+                </Form.Group>
+              </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={handleDelete} type="submit" variant="danger">
-              Delete Account
+            <DeleteButton setShow={setShow}/>
+            <Button onClick={settingsChange} type="submit" variant="primary">
+              Submit
             </Button>
           </Modal.Footer>
       </Modal>

@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import { Trash, TrashFill } from 'react-bootstrap-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteBill } from '../../actions'
 
-const TrashButton = ({ onClick }) => {
+const TrashButton = ({ userId, billId }) => {
   const [hover, setHover] = useState(false);
+  const dispatch = useDispatch();
+  const handleDelete = () => {
+    dispatch(deleteBill(userId, billId))
+  }
+
   return (
     <h5
-      onClick={onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onClick={()=> {handleDelete()}}
     >
       <span title="delete bill">{hover ? <TrashFill /> : <Trash />}</span>
     </h5>

@@ -2,12 +2,13 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
-import Dashboard from './components/dashboard//Dashboard'
+import Dashboard from './components/dashboard/Dashboard'
 import Navigation from './components/Navigation'
 import Signup from './components/Signup'
 import { clearUser, fetchUser } from './actions'
 import { useCookies } from 'react-cookie'
 import Archive from './components/Archive'
+import Spinner from 'react-bootstrap/Spinner'
 
 
 const App = () => {
@@ -40,6 +41,7 @@ const App = () => {
           <Route path="/archive" component={Archive}/>
           {/* <Redirect to={activeUser.name ? "/dashboard" : "/signup"} /> */}
         </Switch>
+        
 
       
     </div>

@@ -5,11 +5,9 @@ export const FETCH_USER = "FETCH_USER";
 export const CLEAR_USER = "CLEAR_USER";
 
 export function createUser(authCode) {
-  debugger;
   return axios
     .post(`/create-new-account`, authCode)
     .then((response) => {
-      debugger;
       return {
         type: CREATE_USER,
         payload: response,
@@ -87,3 +85,14 @@ export function deleteUser(userId) {
     });
 }
 
+export function deleteBill(userId, billId) {
+  return axios
+    .delete(`/delete-bill/${userId}/${billId}`)
+    .then((response) => ({
+      type: FETCH_USER,
+      payload: response,
+    }))
+    .catch(err => {
+      console.error(err)
+    });
+}

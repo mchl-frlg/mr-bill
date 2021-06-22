@@ -9,23 +9,23 @@ const SignupCarousel = () => {
     setIndex(selectedIndex);
   };
 
-  return (
-    <>
-      {carousel.map(item => {
-        return (
-          <div key={item.key}>
-          <h1>{item.title}</h1>
-            <h3>{item.description}</h3>
-            <img
-            width={200}
-            src='https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_relaxing_on_patio_other/1800x1200_cat_relaxing_on_patio_other.jpg'
-            alt='cat'
-            />
-        </div>
-        )
-      })}
-    </>
-  );
+  return(
+    <div className='row'>
+      <div className='col-sm-4 offset-md-4'>
+        <Carousel width={300}>
+          {carousel.map(item => {
+            return (
+              <Carousel.Item key={item.key}>
+                <h1>{item.icon}</h1>
+                <h3 style={{"fontFamily": "'Courier New', Monospace"}}>{item.title}</h3>
+                <p>{item.description}</p>
+              </Carousel.Item>
+            )
+          })}
+        </Carousel>
+      </div>
+    </div>
+  )
 }
 
 export default SignupCarousel
