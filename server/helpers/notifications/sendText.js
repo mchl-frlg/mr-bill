@@ -9,7 +9,7 @@ const sendText = (notifications, user) =>{
        body: `You've got ${notifications} notifications from Mr. Bill!`,
        from: '+14132079738',
        // would be user.phone in a fully-deployed version
-       to: '+1 386-747-9798'
+       to: process.env.TEST_PHONE
      })
     .then(message => {
       return message.sid
