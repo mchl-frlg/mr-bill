@@ -1,8 +1,7 @@
 const cron = require('node-cron');
-const mongoose = require("mongoose");
 const User = require("../../models/user");
 const setupGoogleClient = require('./setupGoogleClient')
-const { encrypt, decrypt } = require('../helpers/crypto');
+const { decrypt } = require('../helpers/crypto');
 const scanInbox = require('./scanInbox');
 const sendEmail = require('./notifications/sendEmail')
 const sendText = require('./notifications/sendText')
@@ -25,6 +24,9 @@ const batchJobScan = (user) => {
       return sendEmail(oAuth2Client, notifications, user)
     })
     .then(sentEmail=>{
+      if (notifications === 0 || !user.notifications.text){
+        return
+      }
       return sendText(notifications, user)
     })
     .then(sentText => {
@@ -60,4 +62,4 @@ const batchJobsStart = () => {
 }
 
 
-module.exports = runBatchJob;
+module.exports = batchJobsStart;

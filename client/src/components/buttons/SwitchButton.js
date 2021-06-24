@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Switch from "react-switch";
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { updateBill } from '../../actions'
 
 

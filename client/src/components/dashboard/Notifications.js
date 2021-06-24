@@ -1,11 +1,10 @@
 import React  from 'react';
 import Moment from 'react-moment';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import EmailButton from '../buttons/EmailButton'
-import{ Table, Badge } from 'react-bootstrap'
+import{ Table } from 'react-bootstrap'
 import SwitchButton from '../buttons/SwitchButton'
 import TrashButton from '../buttons/TrashButton'
-import BellButton from '../buttons/NotificationButton'
 
 const Notifications = () => {
 
@@ -26,11 +25,11 @@ const Notifications = () => {
         <tbody>
         {activeUser.billsList?.map(bill => {
           if(bill.paid || activeUser.billHistory.blacklist.includes(bill.fromEmail) || activeUser.billHistory.whitelist.includes(bill.fromEmail)){
-            return <></>
+            return <React.Fragment key={bill._id}/>
           }
           return (
             <tr key ={bill._id}>
-              <td><Moment format="MM/DD/YYYY">{bill.date}</Moment></td>
+              <td><Moment format="MM/DD/YYYY">{new Date(bill.date)}</Moment></td>
               <td>{bill.from}</td>
               <td>{bill.fromEmail}</td>
               <td><a href={bill.link} target="_blank" rel="noreferrer"><EmailButton/></a></td>

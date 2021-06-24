@@ -1,11 +1,9 @@
 import React  from 'react';
 import Moment from 'react-moment';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import EmailButton from '../buttons/EmailButton'
 import{ Table } from 'react-bootstrap'
 import SwitchButton from '../buttons/SwitchButton'
-import TrashButton from '../buttons/TrashButton'
-import InboxButton from '../buttons/InboxButton'
 
 const BillsTable = () => {
 
@@ -28,7 +26,7 @@ const BillsTable = () => {
           if(activeUser.billHistory.whitelist.includes(bill.fromEmail) && !bill.paid){
             return (
               <tr key ={bill._id}>
-                <td><Moment format="MM/DD/YYYY">{bill.date}</Moment></td>
+                <td><Moment format="MM/DD/YYYY">{new Date(bill.date)}</Moment></td>
                 <td>{bill.from}</td>
                 <td>${bill.amountDue}</td>
                 <td><a href={bill.link} target="_blank" rel="noreferrer"><EmailButton/></a></td>

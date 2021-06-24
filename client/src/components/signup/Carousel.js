@@ -1,13 +1,7 @@
 import Carousel from 'react-bootstrap/Carousel'
-import { useState } from 'react';
 import carousel from './carouselData'
 
 const SignupCarousel = () => {
-  const [index, setIndex] = useState(0);
-
-  const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
-  };
 
   return(
     <div className='row'>

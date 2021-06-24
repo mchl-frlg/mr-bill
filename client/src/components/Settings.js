@@ -4,9 +4,8 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import CloseButton from './buttons/CloseButton';
 import DeleteButton from './buttons/DeleteButton'
-import Moment from 'react-moment';
-import { Redirect, Route, useHistory, Link } from 'react-router-dom';
-import { updateUser, deleteUser } from '../actions'
+import { Link } from 'react-router-dom';
+import { updateUser} from '../actions'
 
 function Settings() {
 

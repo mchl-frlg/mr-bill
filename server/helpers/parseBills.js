@@ -29,7 +29,7 @@ const findAmountDue = (text) => {
 }
 
 const parseBills = (bills, userEmail) => {
-  const parsedBills = [];
+  const parsedBills = []
   bills.forEach(bill => {
     const fromIndex = bill.data.payload.headers.findIndex(header => {
         return header.name === 'From'
@@ -39,16 +39,19 @@ const parseBills = (bills, userEmail) => {
       return
     }
     const fromSplit = from.split('<')
-    const billToAdd = {};
-    billToAdd.fullText = gmailRecurse(bill.data.payload)
-    billToAdd.date = new Date(Number(bill.data.internalDate))
-    billToAdd.from = fromSplit[0]
-    billToAdd.fromEmail = fromSplit.length === 1 ? fromSplit[0] : fromSplit[1].slice(0, -1)
-    billToAdd.link = `https://mail.google.com/mail?authuser=${userEmail}#all/${bill.data.id}`
-    billToAdd.amountDue = findAmountDue(billToAdd.fullText)
+    const fullText = gmailRecurse(bill.data.payload)
+    const billToAdd = {
+      fullText: fullText,
+      date: new Date(Number(bill.data.internalDate)),
+      from: fromSplit[0],
+      fromEmail: fromSplit.length === 1 ? fromSplit[0] : fromSplit[1].slice(0, -1),
+      link: `https://mail.google.com/mail?authuser=${userEmail}#all/${bill.data.id}`,
+      amountDue: findAmountDue(fullText)
+    }
+    
     parsedBills.push(billToAdd)
   })
   return parsedBills
 }
 
-module.exports = parseBills;
+module.exports = parseBills

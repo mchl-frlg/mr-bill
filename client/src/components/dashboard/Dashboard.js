@@ -1,7 +1,5 @@
 import {React, useState }  from 'react';
-import Moment from 'react-moment';
-import { useSelector, useDispatch } from 'react-redux';
-import EmailButton from '../buttons/EmailButton'
+import { useSelector } from 'react-redux';
 import Badge from 'react-bootstrap/button'
 import Notifications from './Notifications'
 import History from './History'
@@ -21,11 +19,6 @@ const NotifyDashboard = () => {
 
   return (
     <>
-      {/* <div className='row'>
-        <div className='col-sm-4 offset-md-4'>
-          <h3>dashboard</h3>
-        </div>
-      </div> */}
       <div className='row'>
         <div className='col-sm-2 offset-md-5'>
           <div style={{"float": "left"}}>
@@ -44,7 +37,7 @@ const NotifyDashboard = () => {
               </h4>
               <p>Bills  <Badge size='sm' variant="success"><strong>{counts.bills}</strong></Badge></p>
           </div>   
-        </div>
+        </div>  
       </div>
       <div className='row'>
         <div className='col-sm-6 offset-md-3 d-column'>

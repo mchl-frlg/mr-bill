@@ -2,14 +2,8 @@ import React from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../actions/index'
-import { useState } from 'react';
-
 
 const Login = () => {
-  const [show, setShow] = useState(false);
-  const onClose = () => {
-    setShow(false);
-  };
   const dispatch = useDispatch()
   const handleLogin = googleData => {
     debugger;

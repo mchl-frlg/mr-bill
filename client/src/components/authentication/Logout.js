@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { clearUser } from '../../actions/index'
 
 const Logout = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(['mr-bill-auth']);
+  const [removeCookie] = useCookies(['mr-bill-auth']);
   const dispatch = useDispatch();
   const onSuccess = googleData => {
     removeCookie('mr-bill-auth')

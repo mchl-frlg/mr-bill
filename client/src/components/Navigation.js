@@ -1,7 +1,6 @@
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
-import { Redirect, Route, Switch, useHistory, Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import Login from './authentication/Login'
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Logout from './authentication/Logout'
 import Settings from './Settings'
 
@@ -47,6 +46,7 @@ const Navigation = () => {
             <Link to='/archive' className='nav-links'>Archive</Link>
           </NavDropdown.Item>
           <NavDropdown.Item href="#action/3.3"><Logout/></NavDropdown.Item>
+          <NavDropdown.Item href="#action/3.3" onClick={()=>{console.log(activeUser)}}>log state</NavDropdown.Item>
         </NavDropdown>
       </Nav>
     </Navbar>

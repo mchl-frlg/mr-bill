@@ -1,14 +1,8 @@
-import { useState } from 'react';
 import { Inbox, InboxFill } from 'react-bootstrap-icons';
 
-const InboxButton = ({ onClose, showBills }) => {
-  const [xHover, setXHover] = useState(false);
+const InboxButton = ({ showBills }) => {
   return (
-    <h1
-      onClick={onClose}
-      onMouseEnter={() => setXHover(true)}
-      onMouseLeave={() => setXHover(false)}
-    >
+    <h1>
       <span title="your bills">{showBills ? <InboxFill /> : <Inbox />}</span>
     </h1>
   );

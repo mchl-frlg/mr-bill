@@ -1,11 +1,11 @@
 import React  from 'react';
 import Moment from 'react-moment';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import EmailButton from './buttons/EmailButton'
 import{ Table } from 'react-bootstrap'
-import SwitchButton from './buttons/SwitchButton'
 import TrashButton from './buttons/TrashButton'
 import ArchiveButton from './buttons/ArchiveButton'
+import { CheckLg, XLg } from 'react-bootstrap-icons'
 
 const Archive = () => {
 
@@ -14,7 +14,7 @@ const Archive = () => {
   return (
     <>
       <h4><span title='notifications'><ArchiveButton/></span></h4>
-      <p>archive</p>
+      <p>Archive</p>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -37,9 +37,11 @@ const Archive = () => {
               <td>{bill.fromEmail}</td>
               <td>${bill.amountDue}</td>
               <td><a href={bill.link} target="_blank" rel="noreferrer"><EmailButton/></a></td>
-              <td><SwitchButton displayOnly={true} paid={isBill}/></td>
-              <td><SwitchButton displayOnly={true} paid={bill.paid}/></td>
-              <td><TrashButton/></td>
+              
+              
+              <td>{isBill ? <CheckLg/> : <XLg/>}</td>
+              <td>{bill.paid ? <CheckLg/> : <XLg/>}</td>
+              <td><TrashButton userId={activeUser._id} billId={bill._id}/></td>
             </tr>
           )
           })}

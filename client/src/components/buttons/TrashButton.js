@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Trash, TrashFill } from 'react-bootstrap-icons';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { deleteBill } from '../../actions'
 
 const TrashButton = ({ userId, billId }) => {
