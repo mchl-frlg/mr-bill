@@ -44,7 +44,6 @@ app.use((req, res, next) => {
   })
 })
 
-const routes = require("./routes/routes");
 const userRoutes = require('./routes/userRoutes')
 const billRoutes = require('./routes/billRoutes')
 

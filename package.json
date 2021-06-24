@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --config jest.config.json",
     "start": "node ./server/server.js",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
@@ -29,5 +29,8 @@
   "engines": {
     "node": "14.16.0",
     "npm": "7.15.0"
+  },
+  "devDependencies": {
+    "jest": "^27.0.5"
   }
 }
