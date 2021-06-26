@@ -8,25 +8,33 @@ const setupGoogleClient = require('../helpers/setupGoogleClient')
 const _ = require("lodash")
 
 router.post("/create-new-account", (req, res) => {
-  let newUser = new User()
+  let newUser
+  let encryptedToken
   const oAuth2Client = setupGoogleClient()
   oAuth2Client.getToken(req.body.code)
     .then(tokenResponse => {
       oAuth2Client.setCredentials(tokenResponse.tokens)
-      newUser.encryptedToken = encrypt(JSON.stringify(tokenResponse.tokens))
+      encryptedToken = encrypt(JSON.stringify(tokenResponse.tokens))
       const oauth2 = google.oauth2({version: 'v2', auth: oAuth2Client})
       return oauth2.userinfo.get()
     })
     .then(profile => {
-      newUser.name = profile.data.name
-      newUser.email = profile.data.email
-      newUser.picture = profile.data.picture
-      newUser.scan.batchScanTime = new Date().getHours()
-      newUser.scan.lastScanned = Date.now()
-      newUser.notifications.email = true
-      newUser.notifications.text = false
-      newUser.phone = ''
-      newUser.billsList = []
+      newUser = new User({
+        name: profile.data.name,
+        email: profile.data.email,
+        picture: profile.data.picture,
+        scan: {
+          batchScanTime: new Date().getHours(),
+          lastScanned: Date.now()
+        },
+        notifications: {
+          email: true,
+          text: false
+        },
+        phone: '',
+        encryptedToken: encryptedToken,
+        billsList: []
+      })
       return scanInbox(oAuth2Client, newUser.email)
     })
     .then(newBillsList => {
@@ -36,28 +44,15 @@ router.post("/create-new-account", (req, res) => {
     .then(sentEmail => {
       return newUser.save()
     })
-    .then(savedUser =>{
+    .then(savedUser => {
       res.send(savedUser)
     })
-    .catch(err=>{
-      if (err){
-        console.error(err)
-      }
-    })
-})
-
-router.post("/fetch-user", (req, res) => {
-  User.find({'encryptedToken.iv': req.body.cookie})
-    .then(user => {
-      res.send(user[0])
-    })
     .catch(err => {
-      if(err){
+      if (err) {
         console.error(err)
       }
     })
 })
-
 
 router.post("/login-user", (req, res) => {
   let currentUser
@@ -77,38 +72,50 @@ router.post("/login-user", (req, res) => {
       res.send(savedUser)
     })
     .catch(err => {
-      if(err){
+      if (err) {
         console.error(err)
       }
     })
 })
 
-router.put("/update-user", (req, res)=> {
+router.post("/fetch-user", (req, res) => {
+  User.find({'encryptedToken.iv': req.body.cookie})
+    .then(user => {
+      res.send(user[0])
+    })
+    .catch(err => {
+      if (err) {
+        console.error(err)
+      }
+    })
+})
+
+router.put("/update-user", (req, res) => {
   User.findById(req.body.user)
-    .then(user=>{
+    .then(user => {
       user.scan.batchScanTime = req.body.time
       user.notifications.email = req.body.email
       user.notifications.text = req.body.text
       user.phone = req.body.phone
       return user.save()
     })
-    .then(savedUser=>{
+    .then(savedUser => {
       res.send(savedUser)
     })
-    .catch(err=>{
-      if(err){
+    .catch(err => {
+      if (err) {
         console.error(err)
       }
     })
 })
 
-router.delete("/delete-user/:id", (req, res)=> {
+router.delete("/delete-user/:id", (req, res) => {
   User.deleteOne({_id: req.params.id})
-    .then(confirmation=>{
+    .then(confirmation => {
       res.end()
     })
-    .catch(err=>{
-      if(err){
+    .catch(err => {
+      if (err) {
         console.error(err)
       }
     })

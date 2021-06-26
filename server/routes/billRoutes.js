@@ -9,16 +9,16 @@ router.post("/clear-db", (req, res) => {
     .then(deleted => {
       res.send('deleted data')
     })
-    .catch(err=>{
-      if (err){
+    .catch(err => {
+      if (err) {
         console.error(err)
       }
     })  
 })
 
-router.put("/update-bill", (req, res)=> {
+router.put("/update-bill", (req, res) => {
   User.findById(req.body.user)
-    .then(user=>{
+    .then(user => {
       const wl = user.billHistory.whitelist
       const bl = user.billHistory.blacklist
       const bill = user.billsList.id(req.body.bill)
@@ -28,41 +28,41 @@ router.put("/update-bill", (req, res)=> {
         bl.push(bill.fromEmail)
       return user.save()
     })
-    .then(savedUser=>{
+    .then(savedUser => {
       res.send(savedUser)
     })
-    .catch(err=>{
-      if(err){
+    .catch(err => {
+      if (err) {
         console.error(err)
       }
     })
 })
 
-router.delete("/delete-bill/:id/:billId", (req, res)=> {
+router.delete("/delete-bill/:id/:billId", (req, res ) => {
   User.find({_id: req.params.id})
-    .then(user=>{
+    .then(user => {
       const newList = user[0].billsList.filter(bill => {
         return bill.id !== req.params.billId
       })
-      user[0].billsList = newList;
+      user[0].billsList = newList
       return user[0].save()
     })
     .then(savedUser => {
       res.send(savedUser)
     })
-    .catch(err=>{
+    .catch(err => {
       if(err){
         console.error(err)
       }
     })
 })
 
-router.post("/schedule", (req, res)=> {
+router.post("/schedule", (req, res) => {
   batchJobsStart()
   res.send('started')
 })
 
-router.post("/text", (req, res)=> {
+router.post("/text", (req, res) => {
   sendText()
   res.send('started')
 })

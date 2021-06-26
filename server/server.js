@@ -2,8 +2,6 @@ require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const User = require("../models/user");
-const session = require('express-session')
 const batchJobsStart = require('./helpers/batchJobsStart')
 const keys = require('./config/keys');
 
@@ -22,11 +20,6 @@ app.use(
   })
 );
 
-app.use(session({ 
-  secret: process.env.COOKIE_SECRET, 
-  //cookie: {maxAge: 3 * 60 * 1000}
-}))
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
@@ -36,13 +29,6 @@ app.use((req, res, next) => {
   );
   next();
 });
-
-app.use((req, res, next) => {
-  User.find({lastSession: req.session.id}).exec((err, foundUser)=>{
-    req.user = foundUser;
-    next()
-  })
-})
 
 const userRoutes = require('./routes/userRoutes')
 const billRoutes = require('./routes/billRoutes')

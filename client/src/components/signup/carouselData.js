@@ -23,7 +23,7 @@ const carousel = [
   },
   {
     title: "Get reminded",
-    description: "Set up Email or Text notifications (or both!), and Mr. Bill wil only reach out when he's found something",
+    description: "Set up Email or Text notifications (or both!), and Mr. Bill will only reach out when he's found something",
     icon: <AlarmFill />,
     key: "u7x!A%D*"
   }
