@@ -1,7 +1,7 @@
 const {google} = require('googleapis');  
 const MIMEText = require('mimetext')
-const btoa = require("btoa")
 
+//Creates MIME in message format and populates it with notification data
 const createMessage = (notifications, user) => {
   const baseText = `You have ${notifications} new notifications!`
   const message = new MIMEText()
@@ -13,15 +13,18 @@ const createMessage = (notifications, user) => {
   return payload
 }
 
+//will separate out the whitelisted 'bills' from the unlabelled 'notifications'
+const billsAndNotificationsCount = () => {
+  
+}
 
-
+//Does not send email if there are no new bills/notifications identified
 const sendEmail = (oAuth2Client, notifications, user) => {
   if (notifications === 0){
     return
   }
   const gmail = google.gmail({version: 'v1', auth: oAuth2Client})
   const body = createMessage(notifications, user)
-  //might be requestbody below instead of body
   return gmail.users.messages.send({userId: 'me', requestBody: body})
     .then(sentEmail => {
       return sentEmail

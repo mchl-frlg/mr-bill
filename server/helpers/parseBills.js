@@ -1,6 +1,7 @@
 const atob = require("atob")
 const _ = require("lodash")
 
+//Drills path down into response object provided by gmail to locate plain text
 const gmailRecurse = (path) =>{
   if(path.body.size > 0){
     return atob(path.body.data)
@@ -9,6 +10,7 @@ const gmailRecurse = (path) =>{
   return gmailRecurse(nextSearch)
 }
 
+//Finds the most likely instance of amount due
 const amountDueRecurse = (dollars, index) => {
   let lastRealNumber = Number(dollars[dollars.length - index].replace(/[^\d.-]/g, ''))
   if (lastRealNumber){
@@ -35,6 +37,7 @@ const parseBills = (bills, userEmail) => {
         return header.name === 'From'
     })
     const from = bill.data.payload.headers[fromIndex].value
+    //Guard keeps user's own emails, including Mr. Bill reminders, from triggering notifications
     if (from.includes(userEmail)){
       return
     }

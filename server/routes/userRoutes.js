@@ -4,6 +4,7 @@ const {google} = require('googleapis');
 const scanInbox = require('../helpers/scanInbox')
 const { encrypt } = require('../helpers/crypto');
 const sendEmail = require('../helpers/notifications/sendEmail')
+const parseBills = require('../helpers/parseBills')
 const setupGoogleClient = require('../helpers/setupGoogleClient')
 const _ = require("lodash")
 
@@ -37,9 +38,10 @@ router.post("/create-new-account", (req, res) => {
       })
       return scanInbox(oAuth2Client, newUser.email)
     })
-    .then(newBillsList => {
-      newUser.billsList = newBillsList
-      return sendEmail(oAuth2Client, newBillsList.length, newUser)
+    .then(newBills => {
+      const parsedBills = parseBills(newBills, newUser.email)
+      newUser.billsList = parsedBills
+      return sendEmail(oAuth2Client, parsedBills.length, newUser)
     })
     .then(sentEmail => {
       return newUser.save()
@@ -64,7 +66,8 @@ router.post("/login-user", (req, res) => {
       return scanInbox(oAuth2Client, currentUser.email, currentUser.scan.lastScanned)
     })
     .then(newBills => {
-      currentUser.billsList = currentUser.billsList.concat(newBills)
+      const parsedBills = parseBills(newBills, currentUser.email)
+      currentUser.billsList = currentUser.billsList.concat(parsedBills)
       currentUser.scan.lastScanned = Date.now()
       return currentUser.save()
     })

@@ -7,7 +7,7 @@ const sendEmail = require('./notifications/sendEmail')
 const sendText = require('./notifications/sendText')
 
 
-
+//Retrieves the users, decrypts their tokens, and performs the notifications by text or email
 const batchJobScan = (user) => {
   let notifications = 0;
   const oAuth2Client = setupGoogleClient()
@@ -39,6 +39,7 @@ const batchJobScan = (user) => {
     })
 }
 
+//Gets each server batch of users corresponding to the hour
 const runBatchJob = async (batchHour) => {
   User.find({"scan.batchScanTime": batchHour})
     .then(usersToScan => {
@@ -48,6 +49,7 @@ const runBatchJob = async (batchHour) => {
   })
 }
 
+//Runs on server start, Node-Cron dispatches at the top of each hour to scan inboxes
 const batchJobsStart = () => {
   const task = cron.schedule(' 0 * * * *', 
     () => {
