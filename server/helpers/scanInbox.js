@@ -2,7 +2,6 @@ const { google } = require('googleapis');
 const googleQuery = "'bill' OR 'invoice' OR 'Bill' OR 'Invoice'"
 const parseBills = require("./parseBills");
 
-
 // Sends api call for list of id's that match keywords, the dispatches individual calls with those Ids to retrieve full email info
 const scanInbox = async (oAuth2Client, userEmail, lastScanned) => {
   lastScanned ? 

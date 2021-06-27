@@ -5,6 +5,7 @@ const { decrypt } = require('../helpers/crypto');
 const scanInbox = require('./scanInbox');
 const sendEmail = require('./notifications/sendEmail')
 const sendText = require('./notifications/sendText')
+const parseBills = require('./parseBills')
 
 
 //Retrieves the users, decrypts their tokens, and performs the notifications by text or email
@@ -14,7 +15,8 @@ const batchJobScan = (user) => {
   const fullToken = JSON.parse(decrypt(user.encryptedToken))
   oAuth2Client.setCredentials({refresh_token: fullToken.refresh_token})
   scanInbox(oAuth2Client, user.email, user.scan.lastScanned)
-    .then(parsedBills => {
+    .then(bills => {
+      const parsedBills = parseBills(bills)
       user.billsList = user.billsList.concat(parsedBills)
       user.scan.lastScanned = Date.now()
       notifications = parsedBills.length
