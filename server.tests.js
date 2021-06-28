@@ -1,7 +1,8 @@
 const { encrypt, decrypt } = require('./server/helpers/crypto')
-const { rawToken, encryptedToken, userEmail } = require('./testingData/testingData')
+const { rawToken, encryptedToken, userEmail, testEmails } = require('./testingData/testingData')
 const scanInbox = require('./server/helpers/scanInbox')
 const setupGoogleClient = require('./server/helpers/setupGoogleClient')
+const parseBills = require('./server/helpers/parseBills')
 
 describe('Encryption', () => {
   it('Properly encrypts a token', () => {
@@ -11,7 +12,7 @@ describe('Encryption', () => {
       iv: expect.any(String),
       content: expect.any(String)
     })
-  });
+  })
 
   it('Properly decrypts a token', () => {
     const decryptoTest = JSON.parse([decrypt(encryptedToken)].concat('"}'))
@@ -27,16 +28,16 @@ describe('Encryption', () => {
     }
 
     expect(decryptoTest).toStrictEqual(testToken)
-  });
-});
+  })
+})
 
 describe('Scan Inbox', () => {
-  it('Returns an array', async (done) => {
+  let emails
+  beforeAll( async () => {
     const oAuth2Client = setupGoogleClient()
     oAuth2Client.setCredentials({refresh_token: rawToken.refresh_token})
     try {
-      const emails = await scanInbox(oAuth2Client, userEmail)
-      expect(emails).toBe(expect.any(Array))
+      emails = await scanInbox(oAuth2Client, userEmail)
       done()
     } catch {
       if (err) {
@@ -45,16 +46,51 @@ describe('Scan Inbox', () => {
       }
     }
   })
-});
+  
+  it('Returns an array', () => {
+    expect(emails).toBe(expect.any(Array))
+  })
+
+  it('Returns proper format', () => {
+    const testEmail = {
+      config: {},
+      data: {},
+      headers: {},
+      status: 200,
+      statusText: 'OK'
+    }
+    
+    expect(emails[0]).toMatchObject(testEmail)
+  })
+})
 
 describe('Parse Bills', () => {
+  let parsedEmails
+  beforeAll(()=>{
+    parsedEmails = parseBills(testEmails, userEmail)
+  })
   it('Returns an Array', () => {
-    expect(true).toEqual(true);
-  });
+    expect(parsedEmails).toBe(expect.any(Array));
+  })
   it('Contains required fields', () => {
-    expect(true).toEqual(true);
-  });
+    const testBill = {
+      fullText: expect.any(String),
+      date: expect.any(Date),
+      from: expect.any(String),
+      fromEmail: expect.any(String),
+      link: expect.any(String),
+      amountDue: expect.any(Number)
+    }
+
+    expect(parsedEmails[0]).toEqual(testBill);
+  })
   it('Locates amounts due', () => {
-    expect(true).toEqual(true);
-  });
-});
+    expect(parsedEmails[1].amountDue).toEqual(61);
+  })
+  it('Locates plain Text', () => {
+    expect(parsedEmails[1]).stringContaining('Account ending in 0150');
+  })
+  it('Removes redundant emails', () => {
+    expect(parsedEmails.length).toEqual(2);
+  })
+})
